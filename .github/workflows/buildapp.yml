@@ -59,6 +59,9 @@ jobs:
       contents: write
 
     steps:
+      - name: Select Xcode Version
+        run: sudo xcode-select -switch /Applications/Xcode_15.4.app
+
       - name: Checkout Main
         uses: actions/checkout@v4
         with:

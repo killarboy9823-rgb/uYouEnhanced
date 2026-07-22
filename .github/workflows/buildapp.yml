@@ -1,4 +1,4 @@
-# Original idea by @Jabraan. Thanks to him for handling the hardest parts!
+# Original idea by @ISnackable. Thanks to him for handling the hardest parts!
 # https://github.com/ISnackable/YTCubePlus/blob/main/.github/workflows/Build.yml
 
 name: Build and Release uYouEnhanced
@@ -54,7 +54,7 @@ concurrency:
 jobs:
   build:
     name: Build uYouEnhanced
-    runs-on: macos-13
+    runs-on: macos-14
     permissions:
       contents: write
 

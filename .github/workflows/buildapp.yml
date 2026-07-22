@@ -134,16 +134,11 @@ jobs:
       - name: Fix compiling & Build Package
         id: build_package
         run: |
-          # Patch Missing Private Frameworks (Preferences) directly in SDK/Theos
-          mkdir -p $THEOS/vendor/frameworks
-          XCODE_SDK_PATH=$(xcrun --sdk iphoneos --show-sdk-path)
-          if [ -d "$XCODE_SDK_PATH/System/Library/PrivateFrameworks/Preferences.framework" ]; then
-            cp -R "$XCODE_SDK_PATH/System/Library/PrivateFrameworks/Preferences.framework" $THEOS/vendor/frameworks/
-          else
-            mkdir -p $THEOS/vendor/frameworks/Preferences.framework
-          fi
-
           cd ${{ github.workspace }}/main
+          
+          # Preferences Framework missing error fix: Create dummy framework folder if not exists
+          mkdir -p $THEOS/sdks/iPhoneOS${{ inputs.sdk_version }}.sdk/System/Library/PrivateFrameworks/Preferences.framework
+          
           sed -i '' "27s#.*#BUNDLE_ID = ${{ env.BUNDLE_ID }}#g" Makefile                          # Modify the bundle ID
           sed -i '' "26s#.*#DISPLAY_NAME = ${{ env.APP_NAME }}#g" Makefile                        # Modify the app name
           sed -i '' "1s#.*#export TARGET = iphone:clang:${{ inputs.sdk_version }}:14.0#g" Makefile # Modify the SDK version

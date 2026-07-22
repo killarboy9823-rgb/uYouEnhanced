@@ -86,22 +86,18 @@ jobs:
           path: theos
           submodules: recursive
 
-      - name: SDK Caching
-        id: SDK
-        uses: actions/cache@v4
-        env:
-          cache-name: iOS-${{ inputs.sdk_version }}-SDK
+      - name: Setup iOS SDK
+        uses: actions/checkout@v4
         with:
-          path: theos/sdks/
-          key: ${{ env.cache-name }}
-          restore-keys: ${{ env.cache-name }}
+          repository: arichornlover/sdks
+          path: sdks
+          sparse-checkout: |
+            iPhoneOS${{ inputs.sdk_version }}.sdk
 
-      - name: Download iOS SDK
-        if: steps.SDK.outputs.cache-hit != 'true'
+      - name: Move SDK to Theos
         run: |
-          curl -sL https://github.com/arichornlover/sdks/releases/download/v1.0/iPhoneOS16.4.sdk.tar.xz -o sdk.tar.xz
-          tar -xf sdk.tar.xz -C $THEOS/sdks/
-          rm sdk.tar.xz
+          mkdir -p $THEOS/sdks
+          mv sdks/iPhoneOS${{ inputs.sdk_version }}.sdk $THEOS/sdks/
         env:
           THEOS: ${{ github.workspace }}/theos
 

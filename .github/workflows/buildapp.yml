@@ -104,9 +104,8 @@ jobs:
           git sparse-checkout set --no-cone iPhoneOS${{ inputs.sdk_version }}.sdk
           git checkout
           mv *.sdk $THEOS/sdks
-          curl -sL https://github.com/theos/frameworks/archive/master.zip -o frameworks.zip
-          unzip -q frameworks.zip
-          cp -r frameworks-master/* $THEOS/vendor/frameworks/
+          mkdir -p $THEOS/vendor/frameworks
+          git clone --quiet --depth=1 https://github.com/theos/frameworks.git $THEOS/vendor/frameworks
         env:
           THEOS: ${{ github.workspace }}/theos
 

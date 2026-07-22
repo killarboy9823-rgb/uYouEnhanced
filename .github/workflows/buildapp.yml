@@ -96,7 +96,7 @@ jobs:
           key: ${{ env.cache-name }}
           restore-keys: ${{ env.cache-name }}
 
-      - name: Download iOS SDK
+      - name: Download iOS SDK & Private Frameworks
         if: steps.SDK.outputs.cache-hit != 'true'
         run: |
           git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/arichornlover/sdks/
@@ -104,6 +104,9 @@ jobs:
           git sparse-checkout set --no-cone iPhoneOS${{ inputs.sdk_version }}.sdk
           git checkout
           mv *.sdk $THEOS/sdks
+          curl -sL https://github.com/theos/frameworks/archive/master.zip -o frameworks.zip
+          unzip -q frameworks.zip
+          cp -r frameworks-master/* $THEOS/vendor/frameworks/
         env:
           THEOS: ${{ github.workspace }}/theos
 

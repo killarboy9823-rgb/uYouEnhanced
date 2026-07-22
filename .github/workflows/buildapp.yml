@@ -86,6 +86,12 @@ jobs:
           path: theos
           submodules: recursive
 
+      - name: Checkout Private Frameworks
+        uses: actions/checkout@v4
+        with:
+          repository: theos/frameworks
+          path: theos/vendor/frameworks
+
       - name: SDK Caching
         id: SDK
         uses: actions/cache@v4
@@ -96,16 +102,13 @@ jobs:
           key: ${{ env.cache-name }}
           restore-keys: ${{ env.cache-name }}
 
-      - name: Download iOS SDK & Private Frameworks
+      - name: Download iOS SDK
         if: steps.SDK.outputs.cache-hit != 'true'
         run: |
-          git clone --quiet -n --depth=1 --filter=tree:0 https://github.com/arichornlover/sdks/
+          git clone --depth 1 --sparse https://github.com/arichornlover/sdks.git sdks
           cd sdks
-          git sparse-checkout set --no-cone iPhoneOS${{ inputs.sdk_version }}.sdk
-          git checkout
-          mv *.sdk $THEOS/sdks
-          mkdir -p $THEOS/vendor/frameworks
-          git clone --quiet --depth=1 https://github.com/theos/frameworks.git $THEOS/vendor/frameworks
+          git sparse-checkout set iPhoneOS${{ inputs.sdk_version }}.sdk
+          mv iPhoneOS${{ inputs.sdk_version }}.sdk $THEOS/sdks/
         env:
           THEOS: ${{ github.workspace }}/theos
 
